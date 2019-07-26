@@ -63,3 +63,61 @@ extension NSObject {
 
 }
 
+
+class Animator {
+    static let instance = Animator()
+    private init(){}
+    
+    func bounceIn(cell:UITableViewCell,row:Int){
+        cell.transform = CGAffineTransform(translationX: 0, y: cell.frame.height)
+        
+        UIView.animate(
+            withDuration: 1,
+            delay: 0.05 * Double(row),
+            usingSpringWithDamping: 0.4,
+            initialSpringVelocity: 0.1,
+            options: [.curveEaseInOut],
+            animations: {
+                cell.transform = CGAffineTransform(translationX: 0, y: 0)
+        })
+    }
+    
+    func fadeIn(cell:UITableViewCell,row:Int){
+        cell.alpha = 0
+        
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0.05 * Double(row),
+            animations: {
+                cell.alpha = 1
+        })
+    }
+    
+    func moveFade(cell:UITableViewCell,row:Int){
+        cell.transform = CGAffineTransform(translationX: 0, y: cell.frame.height/2)
+        cell.alpha = 0
+        
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0.05 * Double(row),
+            options: [.curveEaseInOut],
+            animations: {
+                cell.transform = CGAffineTransform(translationX: 0, y: 0)
+                cell.alpha = 1
+        })
+    }
+    
+    func slideIn(cell:UITableViewCell,row:Int,tableView:UITableView){
+        cell.transform = CGAffineTransform(translationX: tableView.bounds.width, y: 0)
+        
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0.05 * Double(row),
+            options: [.curveEaseInOut],
+            animations: {
+                cell.transform = CGAffineTransform(translationX: 0, y: 0)
+        })
+    }
+}
+
+
