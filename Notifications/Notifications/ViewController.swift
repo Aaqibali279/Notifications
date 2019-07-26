@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet weak var label: UILabel!
-    
+    var row = 0
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -21,6 +21,15 @@ class ViewController: UIViewController {
     
     @objc func setText(notification:Notification) {
         label.text = notification.object as? String
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        var y = -cell.frame.height
+        if indexPath.row >= row{
+            y =  cell.frame.height
+        }
+        Animator.instance.moveFade(cell: cell, row: indexPath.row,y: y)
+        row = indexPath.row
     }
 }
 
@@ -61,48 +70,53 @@ extension NSObject {
         NotificationCenter.default.post(name: .init(name.rawValue), object: object)
     }
 
+    
+    
+    
+    
 }
 
 
 class Animator {
     static let instance = Animator()
     private init(){}
+    private let delay = 0.005
     
-    func bounceIn(cell:UITableViewCell,row:Int){
-        cell.transform = CGAffineTransform(translationX: 0, y: cell.frame.height)
+    func bounceIn(cell:UITableViewCell,row:Int,y:CGFloat){
+        cell.transform = CGAffineTransform(translationX: 0, y: y)
         
         UIView.animate(
-            withDuration: 1,
-            delay: 0.05 * Double(row),
-            usingSpringWithDamping: 0.4,
+            withDuration: 2,
+            delay: delay * Double(row),
+            usingSpringWithDamping: 0.6,
             initialSpringVelocity: 0.1,
             options: [.curveEaseInOut],
             animations: {
-                cell.transform = CGAffineTransform(translationX: 0, y: 0)
+                cell.transform = .identity
         })
     }
     
-    func fadeIn(cell:UITableViewCell,row:Int){
+    func fadeIn(cell:UITableViewCell,row:Int,y:CGFloat){
         cell.alpha = 0
         
         UIView.animate(
             withDuration: 0.5,
-            delay: 0.05 * Double(row),
+            delay: delay * Double(row),
             animations: {
                 cell.alpha = 1
         })
     }
     
-    func moveFade(cell:UITableViewCell,row:Int){
-        cell.transform = CGAffineTransform(translationX: 0, y: cell.frame.height/2)
+    func moveFade(cell:UITableViewCell,row:Int,y:CGFloat){
+        cell.transform = CGAffineTransform(translationX: 0, y: y)
         cell.alpha = 0
         
         UIView.animate(
             withDuration: 0.5,
-            delay: 0.05 * Double(row),
+            delay: delay * Double(row),
             options: [.curveEaseInOut],
             animations: {
-                cell.transform = CGAffineTransform(translationX: 0, y: 0)
+                cell.transform = .identity
                 cell.alpha = 1
         })
     }
@@ -112,10 +126,10 @@ class Animator {
         
         UIView.animate(
             withDuration: 0.5,
-            delay: 0.05 * Double(row),
+            delay: delay * Double(row),
             options: [.curveEaseInOut],
             animations: {
-                cell.transform = CGAffineTransform(translationX: 0, y: 0)
+                cell.transform = .identity
         })
     }
 }
